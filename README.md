@@ -1,9 +1,3 @@
-# Requirements
-alembic
-sqalchemy
-psycopg2-binary
-
-
 # kek-dek-encryption
 
 
