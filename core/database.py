@@ -4,6 +4,7 @@ import psycopg2
 from psycopg2 import OperationalError
 from dotenv import load_dotenv
 from pathlib import Path
+import base64
 
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
@@ -80,15 +81,17 @@ def insert_new_user(user_data: dict) -> bool:
     return True
 
 
-def read_user_data(user_id: int, data: list)->None:
+def read_user_data(user_id: int, data: list) -> dict:
     encrypted_data = _get_data_from_db(user_id, data)
     user_dek = get_user_dek(user_id)
-    # unwrap the dek with kek
     unwrapped_dek = unwrap_dek(user_dek)
 
+    decrypted_data = {}
     for key, value in encrypted_data.items():
         decrypted_value = decrypt_data_with_dek(value, unwrapped_dek)
-        print(key, ": ", decrypted_value.decode("utf-8"))
+        decrypted_data[key] = decrypted_value.decode("utf-8")
+    
+    return decrypted_data  
 
 
 def is_password_match_for_user(user_id: int, password: str)->bool:
@@ -281,8 +284,17 @@ def _get_all_user_data()->list:
     with db.cursor() as c:
         c.execute(f"SELECT * FROM {TABLE_NAME}")
         rows = c.fetchall()
-
         columns = [col[0] for col in c.description]
-        result = [dict(zip(columns, row)) for row in rows]
-
+        result = []
+        
+        for row in rows:
+            row_dict = dict(zip(columns, row))
+            for key, value in row_dict.items():
+                if isinstance(value, (bytes, memoryview)):
+                    # Convert memoryview to bytes first, then to base64
+                    if isinstance(value, memoryview):
+                        value = value.tobytes()
+                    row_dict[key] = base64.b64encode(value).decode('utf-8')
+            result.append(row_dict)
+    
     return result

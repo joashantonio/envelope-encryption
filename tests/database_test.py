@@ -9,50 +9,50 @@ from core.database import *
 
 def insert_new_user_test():
     if insert_new_user({
-        "full_name": "sam",
+        "full_name": "Lebron James",
         "iban": "123",
         "nin": "321",
         "phone_number" : "231", 
         "password": "password"
     }):
-        print("[PASSED] insert_new_user_test.")
+        return (f"[PASSED] insert_new_user_test.")
     else:
-        print("[FAILED] insert_new_user_test")
+        return ("[FAILED] insert_new_user_test")
 
 
 def read_user_data_test():
-    read_user_data(
+    data = read_user_data(
         1,
         ["fullname",
           "iban",
-          "nin"]
+           "nin"]
     )
 
 
 def password_test():
     if(is_password_match_for_user(1, "password")):
-        print("[PASSED] password_test.")
+        return ("[PASSED] password_test.")
     else:
-        print("[FAILED] password_test.")
+        return ("[FAILED] password_test.")
 
 
 def rotate_dek_for_all_users_test():
     if(rotate_dek_for_all_users()):
-        print("[PASSED] rotate_dek_for_all_users_test.")
+        return ("[PASSED] rotate_dek_for_all_users_test.")
     else:
-        print("[FAILED] rotate_dek_for_all_users_test.")
+        return ("[FAILED] rotate_dek_for_all_users_test.")
 
 
 def rotate_kek_test():
     if(rotate_kek_for_all_dek()):
-        print("[PASSED] rotate_kek_test.")
+        return ("[PASSED] rotate_kek_test.")
     else:
-        print("[FAILED] rotate_kek_test.")
+        return ("[FAILED] rotate_kek_test.")
 
 
 def rotate_specific_dek_test():
     if(rotate_specific_dek(1)):
-        print("[PASSED] rotate_specific_dek_test.")
+        return ("[PASSED] rotate_specific_dek_test.")
     else:
-        print("[FAILED] rotate_specific_dek_test.")
+        return ("[FAILED] rotate_specific_dek_test.")
 
