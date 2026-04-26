@@ -16,17 +16,11 @@ class GetDatabaseDataRequest(BaseModel):
     user_id: int
     data: list
 
-
-
-
 app = FastAPI()
-
-
 
 @app.get("/")
 def root():
     return {"message": "Testing KEK and DEK encryption/decryption"}\
-        
         
 @app.get("/get_kek_state")
 def get_kek_state_endpoint():
