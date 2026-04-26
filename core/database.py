@@ -291,7 +291,6 @@ def _get_all_user_data()->list:
             row_dict = dict(zip(columns, row))
             for key, value in row_dict.items():
                 if isinstance(value, (bytes, memoryview)):
-                    # Convert memoryview to bytes first, then to base64
                     if isinstance(value, memoryview):
                         value = value.tobytes()
                     row_dict[key] = base64.b64encode(value).decode('utf-8')

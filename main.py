@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 
-from core.database import read_user_data,_get_all_user_data
+from core.database import _get_data_from_db, read_user_data,_get_all_user_data,get_user_dek
 from fastapi import FastAPI
 from core.encryption import generate_dek, encrypt_data_with_dek, decrypt_data_with_dek, wrap_dek, unwrap_dek
 from core.kms import get_kek_state, rotate_kek,_derive_kek
@@ -39,13 +39,24 @@ def derive_kek_endpoint(string: str):
     kek_hex = kek_state.hex()
     return {"result": kek_hex}
 
+# ALL data but encrypted
 @app.get("/get_all_user_data_encrypted")
 def get_all_user():
     response = _get_all_user_data()
     return {"result": response}
 
-# gi post kay taas kaayo ang params if e complete
-@app.post("/get_row_database_data")
+@app.get("/get_user_dek")
+def get_dek(user_id:int):
+    dek = get_user_dek(user_id)
+    dek_hex = dek.hex()
+    return {"result": dek_hex}
+
+@app.post("/get_specific_data_encrypted")
+def get_row_data(request: GetDatabaseDataRequest):
+    response = _get_data_from_db(request.user_id, request.data)
+    return {"result": response}
+
+@app.post("/get_specific_data_decrypted")
 def get_database_data(request: GetDatabaseDataRequest):
     response =  read_user_data(request.user_id, request.data)
     return {"result": response}
